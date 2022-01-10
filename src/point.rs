@@ -31,6 +31,13 @@ use vector::{Vector1, Vector2, Vector3, Vector4};
 #[cfg(feature = "mint")]
 use mint;
 
+#[cfg(feature = "pyo3")]
+use pyo3::{
+    prelude::*,
+    ffi::PyTypeObject,
+    PyTypeInfo,
+};
+
 /// A point in 1-dimensional space.
 ///
 /// This type is marked as `#[repr(C)]`.
@@ -51,6 +58,95 @@ pub struct Point2<S> {
     pub x: S,
     pub y: S,
 }
+
+#[cfg(feature = "pyo3")]
+unsafe impl PyTypeInfo for Point2<i32> {
+    const NAME: &'static str = "Point";
+    const MODULE: Option<&'static str> = None;
+    type AsRefTarget = PyCell<Self>;
+
+    fn type_object_raw(py: Python) -> *mut PyTypeObject {
+        use pyo3::type_object::LazyStaticType;
+        static TYPE_OBJECT: LazyStaticType = LazyStaticType::new();
+        TYPE_OBJECT.get_or_init::<Self>(py)
+
+    }
+}
+
+#[cfg(feature = "pyo3")]
+impl pyo3::pyclass::PyClass for Point2<i32> {
+    type Dict = pyo3::pyclass_slots::PyClassDummySlot;
+    type WeakRef = pyo3::pyclass_slots::PyClassDummySlot;
+    type BaseNativeType = PyAny;
+}
+
+#[cfg(feature = "pyo3")]
+impl IntoPy<PyObject> for Point2<i32> {
+    fn into_py(self, py: Python) -> PyObject {
+        IntoPy::into_py(Py::new(py, self).unwrap(), py)
+    }
+}
+
+#[cfg(feature = "pyo3")]
+impl pyo3::class::impl_::PyClassImpl for Point2<i32> {
+    const DOC: &'static str = "cgmath Point2<i32>\u{0}";
+    const IS_GC: bool = false;
+    const IS_BASETYPE: bool = false;
+    const IS_SUBCLASS: bool = false;
+    type Layout = PyCell<Point2<i32>>;
+    type BaseType = PyAny;
+    type ThreadChecker = pyo3::class::impl_::ThreadCheckerStub<Point2<i32>>;
+
+    fn for_each_method_def(visitor: &mut dyn FnMut(&[pyo3::class::PyMethodDefType])) {
+        use pyo3::class::impl_::*;
+        let collector = PyClassImplCollector::<Point2<i32>>::new();
+        visitor(collector.py_methods());
+        visitor(collector.py_class_descriptors());
+        visitor(collector.object_protocol_methods());
+        visitor(collector.async_protocol_methods());
+        visitor(collector.context_protocol_methods());
+        visitor(collector.descr_protocol_methods());
+        visitor(collector.mapping_protocol_methods());
+        visitor(collector.number_protocol_methods());
+    }
+    fn get_new() -> Option<pyo3::ffi::newfunc> {
+        use pyo3::class::impl_::*;
+        let collector = PyClassImplCollector::<Self>::new();
+        collector.new_impl()
+    }
+    fn get_alloc() -> Option<pyo3::ffi::allocfunc> {
+        use pyo3::class::impl_::*;
+        let collector = PyClassImplCollector::<Self>::new();
+        collector.alloc_impl()
+    }
+    fn get_free() -> Option<pyo3::ffi::freefunc> {
+        use pyo3::class::impl_::*;
+        let collector = PyClassImplCollector::<Self>::new();
+        collector.free_impl()
+    }
+    fn for_each_proto_slot(visitor: &mut dyn FnMut(&[pyo3::ffi::PyType_Slot])) {
+        // Implementation which uses dtolnay specialization to load all slots.
+        use pyo3::class::impl_::*;
+        let collector = PyClassImplCollector::<Self>::new();
+        visitor(collector.object_protocol_slots());
+        visitor(collector.number_protocol_slots());
+        visitor(collector.iter_protocol_slots());
+        visitor(collector.gc_protocol_slots());
+        visitor(collector.descr_protocol_slots());
+        visitor(collector.mapping_protocol_slots());
+        visitor(collector.sequence_protocol_slots());
+        visitor(collector.async_protocol_slots());
+        visitor(collector.buffer_protocol_slots());
+        visitor(collector.methods_protocol_slots());
+    }
+
+    fn get_buffer() -> Option<&'static pyo3::class::impl_::PyBufferProcs> {
+        use pyo3::class::impl_::*;
+        let collector = PyClassImplCollector::<Self>::new();
+        collector.buffer_procs()
+    }
+}
+
 
 /// A point in 3-dimensional space.
 ///
