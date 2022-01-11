@@ -75,6 +75,12 @@ unsafe impl PyTypeInfo for Point2<i32> {
 
 #[cfg_attr(feature = "pyo3", pymethods)]
 impl Point2::<i32> {
+    #[new]
+    fn py_constructor(x: i32, y: i32) -> Self {
+        Self::new(x, y)
+    }
+
+
     #[getter]
     fn get_x(&self) -> PyResult<i32> {
         Ok(self.x)
