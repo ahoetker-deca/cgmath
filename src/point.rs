@@ -84,6 +84,9 @@ impl Point2::<i32> {
        Ok(format!("{:#?}", &self))
     }
 
+    fn __repr__(&self) -> PyResult<String> {
+        self.__str__()
+    }
 
     #[getter]
     fn get_x(&self) -> PyResult<i32> {
