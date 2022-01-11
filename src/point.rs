@@ -80,6 +80,10 @@ impl Point2::<i32> {
         Self::new(x, y)
     }
 
+    fn __str__(&self) -> PyResult<String> {
+       Ok(format!("{:#?}", &self))
+    }
+
 
     #[getter]
     fn get_x(&self) -> PyResult<i32> {
