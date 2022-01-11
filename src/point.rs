@@ -73,6 +73,32 @@ unsafe impl PyTypeInfo for Point2<i32> {
     }
 }
 
+#[cfg_attr(feature = "pyo3", pymethods)]
+impl Point2::<i32> {
+    #[getter]
+    fn get_x(&self) -> PyResult<i32> {
+        Ok(self.x)
+    }
+
+    #[setter]
+    fn set_x(&mut self, value: i32) -> PyResult<()> {
+        self.x = value;
+        Ok(())
+    }
+
+    #[getter]
+    fn get_y(&self) -> PyResult<i32> {
+        Ok(self.y)
+    }
+
+    #[setter]
+    fn set_y(&mut self, value: i32) -> PyResult<()> {
+        self.y = value;
+        Ok(())
+    }
+}
+
+
 #[cfg(feature = "pyo3")]
 impl pyo3::pyclass::PyClass for Point2<i32> {
     type Dict = pyo3::pyclass_slots::PyClassDummySlot;
